@@ -3,215 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHADOW - SHOP MENU GAME</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>SHADOW - Shop Uy Tín</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --bg: #0b0d17; --card: #161b2e; --accent: #7b2cbf; --green: #22c55e; --red: #ef4444; --sub: #94a3b8; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden; }
-
-        /* Navbar & Sidebar chuẩn Video */
-        .nav { display: flex; align-items: center; padding: 15px; background: var(--bg); border-bottom: 1px solid #232736; position: sticky; top: 0; z-index: 100; }
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: var(--card); transition: 0.3s; z-index: 200; padding: 20px; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
-        .sidebar.active { left: 0; }
-        .side-item { padding: 15px; display: flex; align-items: center; border-radius: 12px; margin-bottom: 5px; cursor: pointer; color: var(--sub); text-decoration: none; }
-        .side-item.active { background: #252a3d; color: white; }
-
-        /* Bảng Chiết Khấu chuẩn Video */
-        .discount-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; border-radius: 10px; overflow: hidden; }
-        .discount-table td { border: 1px solid #2d334a; padding: 8px; text-align: center; }
-
-        /* Card Sản Phẩm */
-        .card { background: var(--card); margin: 15px; border-radius: 20px; overflow: hidden; border: 1px solid #2d334a; position: relative; }
-        .card img { width: 100%; height: 200px; object-fit: cover; }
-        .stock-tag { position: absolute; top: 10px; right: 10px; background: var(--green); padding: 5px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; }
-        .price-select { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 15px 0; }
-        .price-btn { background: #1e2235; border: 1px solid var(--accent); padding: 8px; border-radius: 10px; text-align: center; font-size: 11px; cursor: pointer; }
-        .price-btn.active { background: var(--accent); border-color: white; }
-
-        /* Auth Screen */
-        .auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: var(--card); width: 100%; max-width: 380px; padding: 30px; border-radius: 25px; border: 1px solid #2d334a; }
-        input { width: 100%; background: #0d0f1a; border: 1px solid #2d334a; color: white; padding: 12px; border-radius: 12px; margin-bottom: 12px; outline: none; }
-        .btn-main { background: var(--accent); color: white; border: none; padding: 12px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; }
-
-        /* Admin Section */
-        #admin-panel { display: none; background: #1a1f35; padding: 15px; border-radius: 15px; margin: 15px; border: 1px dashed var(--accent); }
-
-        /* Floating Contact */
-        .fab { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 100; }
-        .btn-fab { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+        body { background-color: #0d1117; color: #e6edf3; font-family: sans-serif; }
+        .cyber-card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+        .neon-text { color: #58a6ff; text-shadow: 0 0 5px #58a6ff; }
+        .btn-buy { background: #238636; color: white; width: 100%; padding: 10px; border-radius: 6px; font-weight: bold; }
+        .admin-panel { border: 2px solid #f85149; margin-top: 20px; display: none; }
+        /* Menu 3 gạch */
+        #side-menu { position: fixed; left: -250px; top: 0; width: 250px; height: 100%; background: #010409; transition: 0.3s; z-index: 1000; padding: 20px; }
+        #side-menu.active { left: 0; }
+        .menu-item { padding: 12px; border-bottom: 1px solid #30363d; display: block; }
     </style>
 </head>
 <body>
 
-    <div id="auth-screen" class="auth-overlay">
-        <div class="auth-card">
-            <h2 id="auth-title" style="text-align:center; color:var(--accent);">ĐĂNG NHẬP</h2>
-            <div id="reg-fields" style="display:none;">
-                <input type="email" id="email" placeholder="Email (tránh mất tài khoản)">
-            </div>
-            <input type="text" id="user" placeholder="Tên đăng nhập">
-            <input type="password" id="pass" placeholder="Mật khẩu">
-            <button class="btn-main" id="auth-btn" onclick="handleAuth()">ĐĂNG NHẬP</button>
-            <div style="margin-top:15px; text-align:center;">
-                <span id="auth-switch" onclick="switchAuth()" style="font-size:13px; color:var(--sub); cursor:pointer;">Chưa có tài khoản? Đăng ký</span>
-            </div>
-            <div style="margin-top:15px; border-top: 1px solid #2d334a; padding-top:15px; text-align:center;">
-                <button onclick="alert('Tính năng đang bảo trì')" style="background:white; color:black; width:100%; padding:10px; border-radius:10px; border:none; font-weight:bold;"><i class="fab fa-google"></i> Login Google</button>
-            </div>
-        </div>
+<div class="flex justify-between items-center p-4 bg-[#161b22] sticky top-0 z-50">
+    <i class="fas fa-bars text-2xl" onclick="toggleMenu()"></i>
+    <div class="font-bold text-xl neon-text">SHADOW.COM</div>
+    <div id="user-info" class="text-sm"></div>
+</div>
+
+<div id="side-menu">
+    <div class="text-right"><i class="fas fa-times" onclick="toggleMenu()"></i></div>
+    <a href="#" class="menu-item"><i class="fas fa-home mr-2"></i> Trang Chủ</a>
+    <a href="#" onclick="showSection('nap-tien')" class="menu-item"><i class="fas fa-wallet mr-2"></i> Nạp Tiền</a>
+    <a href="#" onclick="showSection('lich-su')" class="menu-item"><i class="fas fa-history mr-2"></i> Lịch Sử Giao Dịch</a>
+    <div id="admin-menu-item" style="display:none">
+        <a href="#" onclick="showSection('admin-panel')" class="menu-item text-red-500 font-bold"><i class="fas fa-user-shield mr-2"></i> Quản Lý Admin</a>
+    </div>
+    <a href="https://t.me/+ktWnTQrZAKthYmZl" class="menu-item text-blue-400"><i class="fab fa-telegram mr-2"></i> Telegram Group</a>
+    <a href="https://zalo.me/84364684151" class="menu-item text-blue-500"><i class="fas fa-phone mr-2"></i> Zalo Admin</a>
+</div>
+
+<div class="p-4" id="main-content">
+    <div id="auth-section" class="cyber-card">
+        <h2 class="text-center font-bold mb-4">ĐĂNG NHẬP / ĐĂNG KÝ</h2>
+        <input id="auth-user" type="text" placeholder="Tên đăng nhập hoặc Email" class="w-full p-2 mb-2 bg-[#0d1117] border border-[#30363d]">
+        <input id="auth-pass" type="password" placeholder="Mật khẩu" class="w-full p-2 mb-2 bg-[#0d1117] border border-[#30363d]">
+        <button onclick="handleLogin()" class="btn-buy mb-2">Đăng Nhập</button>
+        <button onclick="handleRegister()" class="w-full p-2 border border-[#30363d] rounded">Đăng Ký Tài Khoản</button>
     </div>
 
-    <div id="app" style="display:none;">
-        <div class="nav">
-            <i class="fas fa-bars" onclick="toggleSide()" style="font-size:24px; margin-right:15px; cursor:pointer;"></i>
-            <div style="font-weight:bold; color:var(--accent); font-size:20px;">SHADOW</div>
-        </div>
+    <div id="shop-section" style="display:none">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="cyber-card">
+                <img src="LINK_ANH_LV5" class="w-full rounded mb-2">
+                <h3 class="font-bold">Acc Lv5 Google</h3>
+                <p class="text-sm text-gray-400">Đăng nhập google, sẵn combo kĩ năng...</p>
+                <div class="text-green-400 font-bold my-2">Giá: 2.500đ</div>
+                <button onclick="buyKey('lv5', 2500)" class="btn-buy">MUA NGAY</button>
+            </div>
 
-        <div id="sidebar" class="sidebar">
-            <h2 style="color:var(--accent); text-align:center;">MENU</h2>
-            <div class="side-item active"><i class="fas fa-home"></i> Trang Chủ</div>
-            <div class="side-item" onclick="alert('Nạp tiền cần Admin duyệt mã/seri')"><i class="fas fa-wallet"></i> Nạp Thẻ</div>
-            <div class="side-item" style="margin-top:50px; color:var(--red);" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i> Đăng xuất</div>
-        </div>
-
-        <div id="admin-panel">
-            <h4 style="margin:0 0 10px 0; color:var(--green);">ADMIN QUẢN LÝ KEY</h4>
-            <input type="text" id="admin-item" placeholder="Loại (lv5/drip/zy)">
-            <input type="text" id="admin-key" placeholder="Nhập Key mới">
-            <button class="btn-main" onclick="addKey()">THÊM KEY</button>
-        </div>
-
-        <div class="card" style="padding:20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                    <div style="font-size:12px; color:var(--sub);">Chào, <span id="u-name"></span></div>
-                    <div style="font-size:24px; font-weight:bold; color:var(--green);"><span id="u-money">0</span>đ</div>
-                </div>
-                <button class="btn-main" style="width:auto; padding:8px 20px;">NẠP TIỀN</button>
+            <div class="cyber-card">
+                <img src="LINK_ANH_LY_TIM" class="w-full rounded mb-2">
+                <h3 class="font-bold text-purple-400">Drip Silent (New)</h3>
+                <p class="text-xs text-gray-400">Menu antiband update thường xuyên, lưu ý log acc clone trước...</p>
+                <select id="time-drip" class="w-full bg-black mt-2 p-1 border border-gray-700">
+                    <option value="60000">1 Ngày - 60k</option>
+                    <option value="100000">7 Ngày - 100k</option>
+                    <option value="160000">30 Ngày - 160k</option>
+                </select>
+                <button onclick="buyKey('drip', 'select')" class="btn-buy mt-2">MUA NGAY</button>
             </div>
             
-            <h4 style="margin:20px 0 10px 0; color:var(--accent);">CHIẾT KHẤU THẺ (Chuẩn Video)</h4>
-            <table class="discount-table">
-                <tr style="background:#252a3d; color:var(--accent);"><td>Loại Thẻ</td><td>10k-50k</td><td>100k-500k</td></tr>
-                <tr><td>Viettel</td><td>-13%</td><td>-15%</td></tr>
-                <tr><td>Vinaphone</td><td>-17%</td><td>-18%</td></tr>
-                <tr><td>Garena</td><td>-12%</td><td>-13%</td></tr>
-            </table>
+            <div class="cyber-card">
+                <img src="LINK_ANH_ZYGAME" class="w-full rounded mb-2">
+                <h3 class="font-bold text-yellow-400">Zygame (New)</h3>
+                <p class="text-xs text-gray-400">Menu antiband update thường xuyên, lưu ý log acc clone trước...</p>
+                <div class="flex gap-2 mt-2">
+                    <select id="type-zy" class="w-1/2 bg-black p-1 border border-gray-700"><option>FFTH</option><option>FFM</option></select>
+                    <select id="time-zy" class="w-1/2 bg-black p-1 border border-gray-700">
+                        <option value="30000">1 Ngày - 30k</option>
+                        <option value="80000">7 Ngày - 80k</option>
+                        <option value="130000">30 Ngày - 130k</option>
+                    </select>
+                </div>
+                <button onclick="buyKey('zygame', 'select')" class="btn-buy mt-2">MUA NGAY</button>
+            </div>
         </div>
-
-        <div id="product-list"></div>
     </div>
+</div>
 
-    <div class="fab">
-        <div class="btn-fab" style="background:#2563eb;" onclick="window.open('https://zalo.me/84364684151')"><i class="fas fa-comment-dots"></i></div>
-        <div class="btn-fab" style="background:#229ED9;" onclick="window.open('https://t.me/+ktWnTQrZAKthYmZl')"><i class="fab fa-telegram-plane"></i></div>
-    </div>
+<script>
+    // Hệ thống lưu trữ dữ liệu giả lập (Auto-save vào LocalStorage)
+    let userData = JSON.parse(localStorage.getItem('shadow_user')) || null;
+    let adminAccount = { user: "shadow+999", pass: "HV0308hv" };
 
-    <script>
-        const ADMIN_USER = "shadow+999";
-        const ADMIN_PASS = "HV0308hv";
-        const DESC = "menu antiband updete thường xuyên lưu ý cách chơi khi muốn chơi thì log acc clone trước chơi 1 trận nếu không band thì có thể log acc 9 khi off nhớ đang xuất acc game";
+    function toggleMenu() { document.getElementById('side-menu').classList.toggle('active'); }
 
-        // Hệ thống dữ liệu tự động lưu (Auto-save)
-        let db = JSON.parse(localStorage.getItem('shadow_data')) || {
-            users: {}, stock: { lv5: ["KEY-LV5-ABC"], drip: ["KEY-DRIP-123"], zy: ["KEY-ZY-999"] }
-        };
-
-        let isRegister = false;
-        let currentUser = "";
-
-        function save() { localStorage.setItem('shadow_data', JSON.stringify(db)); }
-        window.onbeforeunload = save;
-
-        function toggleSide() { document.getElementById('sidebar').classList.toggle('active'); }
-
-        function switchAuth() {
-            isRegister = !isRegister;
-            document.getElementById('auth-title').innerText = isRegister ? "ĐĂNG KÝ" : "ĐĂNG NHẬP";
-            document.getElementById('reg-fields').style.display = isRegister ? "block" : "none";
-            document.getElementById('auth-btn').innerText = isRegister ? "TẠO TÀI KHOẢN" : "ĐĂNG NHẬP";
-            document.getElementById('auth-switch').innerText = isRegister ? "Đã có tài khoản? Đăng nhập" : "Chưa có tài khoản? Đăng ký";
+    function handleLogin() {
+        const u = document.getElementById('auth-user').value;
+        const p = document.getElementById('auth-pass').value;
+        if(u === adminAccount.user && p === adminAccount.pass) {
+            userData = { user: u, role: 'admin', balance: 9999999 };
+            alert("Chào Admin Hoàng Vinh!");
+        } else {
+            userData = { user: u, role: 'user', balance: 0 };
         }
+        localStorage.setItem('shadow_user', JSON.stringify(userData));
+        location.reload();
+    }
 
-        function handleAuth() {
-            const u = document.getElementById('user').value, p = document.getElementById('pass').value;
-            if(!u || !p) return alert("Vui lòng nhập đủ!");
-
-            if(isRegister) {
-                const e = document.getElementById('email').value;
-                if(!e) return alert("Nhập Email để đăng ký!");
-                db.users[u] = { pass: p, email: e, money: 0 };
-                alert("Đăng ký thành công!"); switchAuth();
-            } else {
-                if(u === ADMIN_USER && p === ADMIN_PASS) document.getElementById('admin-panel').style.display = 'block';
-                if(!db.users[u] || db.users[u].pass !== p) return alert("Sai tài khoản hoặc mật khẩu!");
-                
-                currentUser = u;
-                document.getElementById('auth-screen').style.display = 'none';
-                document.getElementById('app').style.display = 'block';
-                document.getElementById('u-name').innerText = u;
-                document.getElementById('u-money').innerText = db.users[u].money.toLocaleString();
-                render();
-            }
-            save();
+    // Tự động đăng nhập khi vào lại web
+    window.onload = () => {
+        if(userData) {
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('shop-section').style.display = 'block';
+            document.getElementById('user-info').innerText = `${userData.user} | ${userData.balance}đ`;
+            if(userData.role === 'admin') document.getElementById('admin-menu-item').style.display = 'block';
         }
+    }
 
-        function render() {
-            const items = [
-                { id: 'lv5', name: 'Acc Clone Lv5 Google', price: 2500, img: '1000182079.jpg', desc: 'đăng nhập google, sẵn combo kĩ năng nhân vật, quay video toàn bộ quá trình mua và đăng nhập để được bảo hành khi lỗi' },
-                { id: 'drip', name: 'Drip Silent', img: '1000182074.jpg', desc: DESC, opts: { '1 Day': 60000, '7 Day': 100000, '30 Day': 160000 } },
-                { id: 'zy', name: 'Zygame', img: '1000182075.jpg', desc: DESC, opts: { '1 Day': 30000, '3 Day': 60000, '7 Day': 80000, '30 Day': 130000 } }
-            ];
-
-            let html = '';
-            items.forEach(i => {
-                const stock = db.stock[i.id].length;
-                html += `
-                <div class="card">
-                    <div class="stock-tag">SỐ LƯỢNG: ${stock}</div>
-                    <img src="${i.img}">
-                    <div style="padding:15px;">
-                        <div style="font-weight:bold; font-size:18px;">${i.name}</div>
-                        ${i.opts ? `<div class="price-select">${Object.entries(i.opts).map(([t,p]) => `<div class="price-btn" onclick="setPrice(this, ${p})">${t}: ${p.toLocaleString()}đ</div>`).join('')}</div>` : `<div style="color:var(--green); font-size:20px; font-weight:bold; margin:10px 0;">${i.price.toLocaleString()}đ</div>`}
-                        <p style="font-size:11px; color:var(--sub);">${i.desc}</p>
-                        <button class="btn-main" onclick="buy('${i.id}')">MUA NGAY</button>
-                    </div>
-                </div>`;
-            });
-            document.getElementById('product-list').innerHTML = html;
-        }
-
-        let selectedPrice = 0;
-        function setPrice(el, p) {
-            document.querySelectorAll('.price-btn').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-            selectedPrice = p;
-        }
-
-        function buy(id) {
-            const cost = id === 'lv5' ? 2500 : selectedPrice;
-            if(cost === 0 && id !== 'lv5') return alert("Vui lòng chọn loại thời gian!");
-            if(db.users[currentUser].money < cost) return alert("Không đủ tiền! Hãy nạp thêm.");
-            if(db.stock[id].length === 0) return alert("Hết hàng!");
-
-            const key = db.stock[id].shift(); // Tự động xóa key sau khi lấy
-            db.users[currentUser].money -= cost;
-            document.getElementById('u-money').innerText = db.users[currentUser].money.toLocaleString();
-            save(); render();
-            alert("MUA THÀNH CÔNG! Key của bạn là: " + key + "\n(Key chỉ xuất hiện 1 lần này)");
-        }
-
-        function addKey() {
-            const it = document.getElementById('admin-item').value;
-            const k = document.getElementById('admin-key').value;
-            if(db.stock[it]) {
-                db.stock[it].push(k);
-                save(); render();
-                alert("Đã thêm key vào kho!");
-            }
-        }
-    </script>
+    function buyKey(type, price) {
+        alert("Tính năng mua tự động đang kết nối Admin duyệt tiền...");
+    }
+</script>
 </body>
 </html>
